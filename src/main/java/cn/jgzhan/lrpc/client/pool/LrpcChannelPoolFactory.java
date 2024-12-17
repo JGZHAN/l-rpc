@@ -1,5 +1,6 @@
 package cn.jgzhan.lrpc.client.pool;
 
+import cn.jgzhan.lrpc.common.config.Config;
 import cn.jgzhan.lrpc.common.config.HandlerConfig;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -52,7 +53,7 @@ public class LrpcChannelPoolFactory {
                         ClientBootstrap.addHandler(ch);
                     }
                 },
-                1_000 // 连接池的最大大小
+                Config.Client.addressMaxConnection() // 连接池的最大大小
         );
     }
 

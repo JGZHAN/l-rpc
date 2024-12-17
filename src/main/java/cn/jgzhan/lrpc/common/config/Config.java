@@ -88,4 +88,13 @@ public class Config {
             return Integer.parseInt(PROPERTIES.getProperty("server.worker.max", "1000"));
         }
     }
+    /**
+     * 获取client信息
+     */
+    public static class Client {
+
+        public static int addressMaxConnection() {
+            return Integer.parseInt(PROPERTIES.getProperty("client.address.max.connection", "1000"));
+        }
+    }
 }
