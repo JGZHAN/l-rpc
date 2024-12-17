@@ -9,8 +9,6 @@ import cn.jgzhan.lrpc.example.api.TestService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -21,13 +19,11 @@ import java.util.concurrent.Executors;
  * @date 2024/12/11
  */
 @Slf4j
-@SpringBootTest
 public class ClientTest {
 
     @Resource
     private RequestProxy requestProxy = new RequestProxy();
 
-    @Autowired
     private ServiceTable serviceTable = new ServiceTable();
 
     public static void main(String[] args) {
