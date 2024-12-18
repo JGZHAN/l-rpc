@@ -28,7 +28,7 @@ public class ServiceTest {
     @Test
     public void testStartServer() throws InterruptedException, IOException {
         final var scanner = new Scanner(System.in);
-        LrpcServerBootstrap.start();
+//        LrpcServerBootstrap.start();
         Thread.sleep(3000);
         while (true) {
             System.out.println("是否结束测试？");
@@ -37,7 +37,7 @@ public class ServiceTest {
                 break;
             }
         }
-        LrpcServerBootstrap.stop();
+//        LrpcServerBootstrap.stop();
     }
 
 

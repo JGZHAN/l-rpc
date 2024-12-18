@@ -7,7 +7,9 @@ import cn.jgzhan.lrpc.common.dto.Pair;
 import cn.jgzhan.lrpc.common.exception.LRPCTimeOutException;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.Future;
-import lombok.extern.slf4j.Slf4j;
+import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.Set;
@@ -23,9 +25,10 @@ import static cn.jgzhan.lrpc.client.ServiceTable.ADDRESS_POOL_MAP;
  * @version 1.0
  * @date 2024/12/9
  */
-@Slf4j
+@Data
 public class ChannelManager {
 
+    private static final Logger log = LoggerFactory.getLogger(ChannelManager.class);
 
     private final LoadBalanceFactory loadBalanceFactory = new LoadBalanceFactory();
 

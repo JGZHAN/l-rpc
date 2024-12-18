@@ -7,7 +7,8 @@ import cn.jgzhan.lrpc.common.serializer.SerializerImpl;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -16,8 +17,8 @@ import java.util.List;
  * @version 1.0
  * @date 2024/12/9
  */
-@Slf4j
 public class LRPCDecoder extends ByteToMessageCodec<Message> {
+    private static final Logger log = LoggerFactory.getLogger(LRPCDecoder.class);
 
     private static final byte[] PROTOCOL_MAGIC = new byte[]{'L', 'R', 'P', 'C'};
     private static final byte PROTOCOL_VERSION = 1;

@@ -12,8 +12,7 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 public @interface LrpcReference {
 
-    String value();
 
     // 格式：{ip:port, ip:port, ...}
-    String[] addressArr();
+    String[] addressArr() default {};
 }

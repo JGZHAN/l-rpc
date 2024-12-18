@@ -2,7 +2,8 @@ package cn.jgzhan.lrpc.common.thread;
 
 import cn.jgzhan.lrpc.common.config.Config;
 import io.netty.util.concurrent.FastThreadLocalThread;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ForkJoinPool;
 
@@ -13,8 +14,9 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * @version 1.0
  * @date 2024/12/6
  */
-@Slf4j
 public class PoolVirtualThread extends FastThreadLocalThread {
+    private static final Logger log = LoggerFactory.getLogger(PoolVirtualThread.class);
+
     private static final Builder.OfVirtual VIRTUAL_THREAD_BUILDER;
 
     static {

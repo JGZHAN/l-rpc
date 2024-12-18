@@ -7,6 +7,8 @@ import cn.jgzhan.lrpc.registry.RegistryFactory;
 import io.netty.channel.pool.FixedChannelPool;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -22,9 +24,9 @@ import static cn.jgzhan.lrpc.client.ServiceTable.SERVICE_ADDRESS_MAP;
  * @version 1.0
  * @date 2024/12/9
  */
-@Slf4j
 public class Consumer {
 
+    private static final Logger log = LoggerFactory.getLogger(Consumer.class);
 
 
     public static Set<Pair<String, Integer>> getServiceAddress(Method method) {
@@ -70,14 +72,6 @@ public class Consumer {
                 case Change.REMOVE -> deleteServiceAddress(provider);
             }
         });
-
-//        registry.watch((type, oldData, data) -> {
-//            switch (type) {
-//                case NODE_CREATED -> addServiceAddress(data);
-//                case NODE_CHANGED -> updateServiceAddress(data);
-//                case NODE_DELETED -> deleteServiceAddress(oldData);
-//            }
-//        });
     }
 
     public static Set<Pair<String, Integer>> putToAddressMap(Method method) {

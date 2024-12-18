@@ -6,9 +6,9 @@ import cn.jgzhan.lrpc.common.config.Config;
 import cn.jgzhan.lrpc.common.dto.Pair;
 import cn.jgzhan.lrpc.common.exception.LRPCTimeOutException;
 import cn.jgzhan.lrpc.example.api.TestService;
-import jakarta.annotation.Resource;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -18,10 +18,9 @@ import java.util.concurrent.Executors;
  * @version 1.0
  * @date 2024/12/11
  */
-@Slf4j
 public class ClientTest {
+    private static final Logger log = LoggerFactory.getLogger(ClientTest.class);
 
-    @Resource
     private RequestProxy requestProxy = new RequestProxy();
 
     private ServiceTable serviceTable = new ServiceTable();

@@ -1,15 +1,16 @@
 package cn.jgzhan.lrpc.registry;
 
 import cn.jgzhan.lrpc.common.config.Config;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author jgzhan
  * @version 1.0
  * @date 2024/12/17
  */
-@Slf4j
 public class RegistryFactory {
+    private static final Logger log = LoggerFactory.getLogger(RegistryFactory.class);
 
     private static RegistryCenter REGISTRY_CENTER;
 

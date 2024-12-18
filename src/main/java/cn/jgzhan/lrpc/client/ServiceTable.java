@@ -7,7 +7,8 @@ import cn.jgzhan.lrpc.common.exception.LRPCTimeOutException;
 import cn.jgzhan.lrpc.registry.RegistryFactory;
 import io.netty.channel.pool.ChannelPool;
 import io.netty.channel.pool.FixedChannelPool;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Set;
@@ -18,8 +19,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version 1.0
  * @date 2024/12/11
  */
-@Slf4j
 public class ServiceTable implements AutoCloseable {
+
+    private static final Logger log = LoggerFactory.getLogger(ServiceTable.class);
+
     // 本地缓存连接池
     public static final Map<String, FixedChannelPool> ADDRESS_POOL_MAP = new ConcurrentHashMap<>();
     // 本地缓存注册中心的服务提供者
@@ -59,7 +62,7 @@ public class ServiceTable implements AutoCloseable {
     }
 
 
-    private static Map<Class<?>, Set<String>/*注解上的address*/> getAllLrpcReference() {
+    public Map<Class<?>, Set<String>/*注解上的address*/> getAllLrpcReference() {
         // 扫描
         final var consumerScanPackage = Config.consumerScanPackage();
         final var loader = Thread.currentThread().getContextClassLoader();

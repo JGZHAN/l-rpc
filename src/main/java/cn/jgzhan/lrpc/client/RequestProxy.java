@@ -8,7 +8,8 @@ import io.netty.channel.Channel;
 import io.netty.util.concurrent.DefaultPromise;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -24,30 +25,48 @@ import static cn.jgzhan.lrpc.common.handler.RpcRespHandler.PROMISES;
  * @version 1.0
  * @date 2024/12/9
  */
-@Slf4j
 public class RequestProxy {
 
+    private static final Logger log = LoggerFactory.getLogger(ChannelManager.class);
 
     private final ChannelManager channelManager = new ChannelManager();
 
     public <T> T getProxy(Class<T> clazz) {
         return this.getProxy(clazz, null);
     }
+
+    // 通过Cglib动态代理生成代理对象
+//    public <T> T getProxy(Class<T> clazz, Set<Pair<String, Integer>> serviceAddress) {
+//        Enhancer enhancer = new Enhancer();
+//        enhancer.setSuperclass(clazz);
+//        enhancer.setCallback((MethodInterceptor) (obj, method, args, proxy) -> {
+//            final Function<Channel, ?> channelExeFunction = channel -> {
+//                RpcRequestMessage msg = buildRpcRequestMessage(clazz, method, args);
+//                final var promise = new DefaultPromise<>(channel.eventLoop());
+//                PROMISES.put(msg.getMessageId(), promise);
+//                // 发送请求，且处理写失败
+//                final var channelFuture = channel.writeAndFlush(msg);
+//                channelFuture.addListener(processAftermath(promise, msg));
+//                return getResult(promise);
+//            };
+//            return channelManager.executeWithChannel(method, serviceAddress, channelExeFunction);
+//        });
+//        return clazz.cast(enhancer.create());
+//    }
+
     public <T> T getProxy(Class<T> clazz, Set<Pair<String, Integer>> serviceAddress) {
-        final var proxyInstance = Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, (proxy, method, args) ->
-                {
-                    final Function<Channel, ?> channelExeFunction = channel -> {
-                        RpcRequestMessage msg = buildRpcRequestMessage(clazz, method, args);
-                        final var promise = new DefaultPromise<>(channel.eventLoop());
-                        PROMISES.put(msg.getMessageId(), promise);
-                        // 发送请求，且处理写失败
-                        final var channelFuture = channel.writeAndFlush(msg);
-                        channelFuture.addListener(processAftermath(promise, msg));
-                        return getResult(promise);
-                    };
-                    return channelManager.executeWithChannel(method, serviceAddress, channelExeFunction);
-                }
-        );
+        final var proxyInstance = Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, (proxy, method, args) -> {
+            final Function<Channel, ?> channelExeFunction = channel -> {
+                RpcRequestMessage msg = buildRpcRequestMessage(clazz, method, args);
+                final var promise = new DefaultPromise<>(channel.eventLoop());
+                PROMISES.put(msg.getMessageId(), promise);
+                // 发送请求，且处理写失败
+                final var channelFuture = channel.writeAndFlush(msg);
+                channelFuture.addListener(processAftermath(promise, msg));
+                return getResult(promise);
+            };
+            return channelManager.executeWithChannel(method, serviceAddress, channelExeFunction);
+        });
         return clazz.cast(proxyInstance);
     }
 

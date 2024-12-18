@@ -10,19 +10,20 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author jgzhan
  * @version 1.0
  * @date 2024/12/10
  */
-@Slf4j
 public class LrpcServerBootstrap {
+    private static final Logger log = LoggerFactory.getLogger(LrpcServerBootstrap.class);
 
     private static ServerBootstrap bootstrap;
 
-    public static void start() {
+    public void start() {
         // 1. 创建一个服务端对象
         bootstrap = new ServerBootstrap();
         final var boss = new NioEventLoopGroup(1);
@@ -61,7 +62,7 @@ public class LrpcServerBootstrap {
 
     }
 
-    public static void stop() {
+    public void stop() {
         if (bootstrap == null) {
             log.error("服务未启动");
             return;

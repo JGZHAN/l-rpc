@@ -9,7 +9,8 @@ import io.netty.channel.pool.ChannelHealthChecker;
 import io.netty.channel.pool.ChannelPoolHandler;
 import io.netty.channel.pool.FixedChannelPool;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -18,8 +19,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version 1.0
  * @date 2024/12/11
  */
-@Slf4j
 public class LrpcChannelPoolFactory {
+
+    private static final Logger log = LoggerFactory.getLogger(LrpcChannelPoolFactory.class);
 
     private static final AtomicInteger ID = new AtomicInteger(0);
 

@@ -1,13 +1,12 @@
 package cn.jgzhan.lrpc.common.annotation;
 
 import cn.jgzhan.lrpc.common.dto.Pair;
-import cn.jgzhan.lrpc.example.api.TestService;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.*;
 
@@ -16,18 +15,9 @@ import java.util.*;
  * @version 1.0
  * @date 2024/12/9
  */
-@Slf4j
 public class AnnotationScanner {
-    public static void main(String[] args) {
-//        final var scanPackage = Config.getConsumerScanPackage();
-//        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-//        Set<Class<?>> classes = getClasses(scanPackage, loader);
-//        final var classes1 = getFieldsForAnnotation(classes, LrpcReference.class);
-//        System.out.println("classes1 = " + classes1);
 
-        System.out.println("TestService.class.getGenericInterfaces() = " + Arrays.toString(TestService.class.getGenericInterfaces()));
-
-    }
+    private static final Logger log = LoggerFactory.getLogger(AnnotationScanner.class);
 
     public static Set<Class<?>> getClasses(String packageName, ClassLoader loader) {
         Set<Class<?>> classes = new HashSet<>();

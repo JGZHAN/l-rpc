@@ -5,7 +5,8 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.concurrent.Promise;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,8 +17,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2024/12/4
  */
 @ChannelHandler.Sharable
-@Slf4j
 public class RpcRespHandler extends SimpleChannelInboundHandler<RpcResponseMessage> {
+
+    private static final Logger log = LoggerFactory.getLogger(RpcRespHandler.class);
 
     public static final Map<Integer, Promise<Object>> PROMISES = new ConcurrentHashMap<>();
 

@@ -4,7 +4,6 @@ import cn.jgzhan.lrpc.common.config.Config;
 import cn.jgzhan.lrpc.common.dto.Pair;
 import cn.jgzhan.lrpc.common.dto.Provider;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -14,6 +13,8 @@ import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -29,8 +30,9 @@ import static cn.jgzhan.lrpc.common.constant.RegistryConstant.PROVIDER;
  * @version 1.0
  * @date 2024/12/9
  */
-@Slf4j
 public class ZookeeperRegistryCenter implements RegistryCenter {
+    private static final Logger log = LoggerFactory.getLogger(ZookeeperRegistryCenter.class);
+
     private static final Pattern SERVICE_NODE_PATTERN = Pattern.compile("^/provider/([^/]+)/([^:]+):(\\d+)$");
 
     private static CuratorFramework client;
