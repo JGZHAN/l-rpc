@@ -17,7 +17,7 @@ import java.util.function.BiConsumer;
 public class LocalRegistryCenter implements RegistryCenter {
 
     @Override
-    public void registerService(Method method, int port) {
+    public void registerService(Method method) {
         // do nothing
     }
 

@@ -17,7 +17,6 @@ public class LoadBalanceFactory {
         Optional.of(allBalancers)
                 .ifPresent(loadBalancers ->
                         loadBalancers.forEach(loadBalancer -> TYPE_LOAD_BALANCER_MAP.put(loadBalancer.getLoadBalancerType(), loadBalancer)));
-
     }
 
     @NonNull
@@ -35,7 +34,7 @@ public class LoadBalanceFactory {
      * @param type the type
      * @return the load balancer
      */
-    public LoadBalancer byType(LoadBalancerType type) {
+    public static LoadBalancer byType(LoadBalancerType type) {
         return TYPE_LOAD_BALANCER_MAP.get(type);
     }
 }

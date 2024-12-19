@@ -21,13 +21,22 @@ public class RpcRespHandler extends SimpleChannelInboundHandler<RpcResponseMessa
 
     private static final Logger log = LoggerFactory.getLogger(RpcRespHandler.class);
 
-    public static final Map<Integer, Promise<Object>> PROMISES = new ConcurrentHashMap<>();
+
+    private static final Map<Integer, Promise<Object>> PROMISES = new ConcurrentHashMap<>();
+
+    public static void addPromise(Integer sequenceId, Promise<Object> promise) {
+        PROMISES.put(sequenceId, promise);
+    }
+
+    public static Promise<Object> removePromise(Integer sequenceId) {
+        return PROMISES.remove(sequenceId);
+    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcResponseMessage msg) throws Exception {
 
         final var sequenceId = msg.getMessageId();
-        final var promise = PROMISES.remove(sequenceId);
+        final var promise = removePromise(sequenceId);
         if (promise == null) {
             return;
         }

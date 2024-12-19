@@ -8,11 +8,12 @@ import java.lang.annotation.*;
 /**
  * @author jgzhan
  * @version 1.0
- * @date 2024/12/9
+ * @date 2024/12/19
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
+@Import(ServiceScannerRegistrar.class)
 @Target(ElementType.TYPE)
-public @interface LrpcService {
-    String serviceName() default "";
+public @interface LrpcScan {
+    String[] basePackages() default {};
 }

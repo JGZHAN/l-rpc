@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.*;
 
@@ -87,11 +88,10 @@ public class AnnotationScanner {
                 throw new RuntimeException(e);
             }
         }
-        // provider.clz 一样的合并里面的map
         return result;
     }
 
-    private static void findService(Class<?> clz,Set<Pair<Class<?>, Object>> result) throws Exception {
+    private static void findService(Class<?> clz, Set<Pair<Class<?>, Object>> result) throws Exception {
         if (!clz.isAnnotationPresent(LrpcService.class)) {
             return;
         }
@@ -105,6 +105,16 @@ public class AnnotationScanner {
         final Class<?> interFace = Class.forName(genericInterfaces[0].getTypeName());
         final Object implInstance = clz.cast(clz.getDeclaredConstructor().newInstance());
         result.add(Pair.of(interFace, implInstance));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Pair<Class<T>, T> findService(T instance) {
+        final var genericInterfaces = instance.getClass().getGenericInterfaces();
+        if (genericInterfaces.length == 0) {
+            return Pair.of((Class<T>) instance.getClass(), instance);
+        }
+        final Class<T> interFace = (Class<T>) genericInterfaces[0];
+        return Pair.of(interFace, instance);
     }
 
 }

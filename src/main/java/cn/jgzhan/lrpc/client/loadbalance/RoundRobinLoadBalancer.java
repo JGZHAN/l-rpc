@@ -3,6 +3,9 @@ package cn.jgzhan.lrpc.client.loadbalance;
 import cn.jgzhan.lrpc.common.dto.Pair;
 
 import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -12,7 +15,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class RoundRobinLoadBalancer implements LoadBalancer {
 
-    private static final AtomicInteger INDEX = new AtomicInteger(0);
+    private final Map<Method, AtomicInteger> INDEX_MAP;
+    private final Map<Set<Pair<String, Integer>>, AtomicInteger> INDEX_MAP_OF_SPECIFY_THE_ADDRESS;
+    public RoundRobinLoadBalancer(){
+        INDEX_MAP = new ConcurrentHashMap<>();
+        INDEX_MAP_OF_SPECIFY_THE_ADDRESS = new ConcurrentHashMap<>();
+    }
 
     @Override
     public LoadBalancerType getLoadBalancerType() {
@@ -21,7 +29,20 @@ public class RoundRobinLoadBalancer implements LoadBalancer {
     @Override
     public Pair<String, Integer> selectServiceAddress(Method service) {
         final var serviceAddress = this.getServiceAddress(service);
-        final var nowIndex = INDEX.getAndIncrement() % serviceAddress.size();
+        assert serviceAddress != null && !serviceAddress.isEmpty();
+        final var nowIndex = INDEX_MAP.computeIfAbsent(service, k -> new AtomicInteger(0)).getAndIncrement();
+        return select(serviceAddress, nowIndex);
+    }
+
+    @Override
+    public Pair<String, Integer> selectServiceAddress(Set<Pair<String, Integer>> serviceAddress) {
+        assert serviceAddress != null && !serviceAddress.isEmpty();
+        final var nowIndex = INDEX_MAP_OF_SPECIFY_THE_ADDRESS.computeIfAbsent(serviceAddress, k -> new AtomicInteger(0)).getAndIncrement();
+        return select(serviceAddress, nowIndex);
+    }
+
+    private static Pair<String, Integer> select(Set<Pair<String, Integer>> serviceAddress, int nowIndex) {
+        nowIndex = nowIndex % serviceAddress.size();
         return serviceAddress.stream()
                 .skip(nowIndex)
                 .findFirst()

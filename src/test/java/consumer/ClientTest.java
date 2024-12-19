@@ -1,7 +1,6 @@
 package consumer;
 
-import cn.jgzhan.lrpc.client.RequestProxy;
-import cn.jgzhan.lrpc.client.ServiceTable;
+import cn.jgzhan.lrpc.client.RequestProxyFactory;
 import cn.jgzhan.lrpc.common.config.Config;
 import cn.jgzhan.lrpc.common.dto.Pair;
 import cn.jgzhan.lrpc.common.exception.LRPCTimeOutException;
@@ -21,9 +20,7 @@ import java.util.concurrent.Executors;
 public class ClientTest {
     private static final Logger log = LoggerFactory.getLogger(ClientTest.class);
 
-    private RequestProxy requestProxy = new RequestProxy();
-
-    private ServiceTable serviceTable = new ServiceTable();
+    private RequestProxyFactory requestProxyFactory = new RequestProxyFactory();
 
     public static void main(String[] args) {
         final var clientTest = new ClientTest();
@@ -36,37 +33,31 @@ public class ClientTest {
 
     @Test
     public void testClient() throws LRPCTimeOutException {
-        serviceTable.init();
-        final var service = requestProxy.getProxy(TestService.class, Set.of(Pair.of("127.0.0.1", Config.Server.port())));
-//        final var service = requestProxy.getProxy(TestService.class);
-//        final var result = service.hello("张三");
-//        final var scanner = new Scanner(System.in);
-//        while (true) {
-//            System.out.println("是否开始测试？");
-//            final var next = scanner.next();
-//            if ("y".equals(next)) {
-//                break;
-//            }
-//        }
+//        final var service = requestProxyFactory.getProxy(TestService.class, Set.of(Pair.of("127.0.0.1", Config.Server.port())));
+        final var service = requestProxyFactory.getProxy(TestService.class);
+        final var result = service.hello("张三");
+        System.out.println("测试结束, 结果: " + result);
+    }
+    @Test
+    public void testClientFor() throws LRPCTimeOutException {
+        final var service = requestProxyFactory.getProxy(TestService.class, Set.of(Pair.of("127.0.0.1", Config.Server.port())));
+
         final var executorService = Executors.newVirtualThreadPerTaskExecutor();
-//        final var executorService = Executors.newCachedThreadPool();
 
         for (int i = 0; i < 10; i++) {
             int finalI = i;
             try {
-                Thread.sleep(1000);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-//            executorService.execute(() -> {
-//            Thread.ofVirtual().start(() -> {
+            executorService.execute(() -> {
                 log.info("开始测试{}", finalI);
                 final var result = service.hello("张三" + finalI);
                 log.info("测试结果{}", result);
-//            });
+            });
         }
         executorService.close();
-        serviceTable.stop();
         System.out.println("测试结束");
     }
 }

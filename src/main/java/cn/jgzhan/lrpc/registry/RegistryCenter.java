@@ -14,15 +14,25 @@ import java.util.function.BiConsumer;
  * @version 1.0
  * @date 2024/12/17
  */
-public interface RegistryCenter extends AutoCloseable{
+public interface RegistryCenter extends AutoCloseable {
+
+    /**
+     * 服务注册
+     *
+     * @param clz 类
+     */
+    default void registerService(Class clz) {
+        for (var declaredMethod : clz.getDeclaredMethods()) {
+            this.registerService(declaredMethod);
+        }
+    }
 
     /**
      * 服务注册
      *
      * @param method 方法
-     * @param port   端口
      */
-    void registerService(Method method, int port);
+    void registerService(Method method);
 
     /**
      * 发现服务

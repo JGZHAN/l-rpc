@@ -3,6 +3,7 @@ package cn.jgzhan.lrpc.common.config;
 import cn.jgzhan.lrpc.common.handler.RpcReqHandler;
 import cn.jgzhan.lrpc.common.handler.RpcRespHandler;
 import cn.jgzhan.lrpc.common.protocol.LRPCDecoder;
+import cn.jgzhan.lrpc.common.util.SingletonUtils;
 import io.netty.channel.ChannelHandler;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.logging.LogLevel;
@@ -16,8 +17,6 @@ import io.netty.handler.logging.LoggingHandler;
 public class HandlerConfig {
 
     private static final LoggingHandler LOGGING_HANDLER = new LoggingHandler(LogLevel.DEBUG);
-
-    private static final ChannelHandler RPC_REQ_HANDLER = new RpcReqHandler();
 
     private static final ChannelHandler RPC_RESP_HANDLER = new RpcRespHandler();
 
@@ -34,7 +33,7 @@ public class HandlerConfig {
     }
 
     public static ChannelHandler getRpcReqHandler() {
-        return RPC_REQ_HANDLER;
+        return SingletonUtils.getSingletonInstance(RpcReqHandler.class);
     }
 
     public static ChannelHandler getRpcRespHandler() {

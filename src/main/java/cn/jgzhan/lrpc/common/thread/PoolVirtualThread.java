@@ -21,6 +21,10 @@ public class PoolVirtualThread extends FastThreadLocalThread {
 
     static {
         VIRTUAL_THREAD_BUILDER = Thread.ofVirtual();
+        modifyDefaultScheduler();
+    }
+
+    private static void modifyDefaultScheduler() {
         /**
          * 因为ThreadBuilders.VirtualThreadBuilder的scheduler属性是私有的，且没有提供set方法
          * 所以通过反射强制修改属性scheduler

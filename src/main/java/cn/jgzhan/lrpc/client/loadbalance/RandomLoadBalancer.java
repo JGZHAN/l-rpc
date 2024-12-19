@@ -3,6 +3,7 @@ package cn.jgzhan.lrpc.client.loadbalance;
 import cn.jgzhan.lrpc.common.dto.Pair;
 
 import java.lang.reflect.Method;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -21,6 +22,16 @@ public class RandomLoadBalancer implements LoadBalancer {
 
         final var serviceAddress = this.getServiceAddress(service);
 
+        final var skipNum = ThreadLocalRandom.current().nextInt(0, serviceAddress.size());
+
+        return serviceAddress.stream()
+                .skip(skipNum)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("获取地址失败"));
+    }
+
+    @Override
+    public Pair<String, Integer> selectServiceAddress(Set<Pair<String, Integer>> serviceAddress) {
         final var skipNum = ThreadLocalRandom.current().nextInt(0, serviceAddress.size());
 
         return serviceAddress.stream()

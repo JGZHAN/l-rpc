@@ -4,7 +4,6 @@ import cn.jgzhan.lrpc.common.config.Config;
 import cn.jgzhan.lrpc.common.config.HandlerConfig;
 import cn.jgzhan.lrpc.common.group.VirtualThreadNioEventLoopGroup;
 import cn.jgzhan.lrpc.registry.RegistryFactory;
-import cn.jgzhan.lrpc.server.service.ServiceFactory;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -28,7 +27,6 @@ public class LrpcServerBootstrap {
         bootstrap = new ServerBootstrap();
         final var boss = new NioEventLoopGroup(1);
         final var worker = new VirtualThreadNioEventLoopGroup(Config.Server.workerMax());
-//        final var worker = new NioEventLoopGroup(Config.getServerWorkerMax());
         bootstrap.group(boss, worker);
         bootstrap.channel(NioServerSocketChannel.class);
         bootstrap.childHandler(new ChannelInitializer<NioSocketChannel>() {
@@ -46,8 +44,7 @@ public class LrpcServerBootstrap {
         // 3. 服务端开始监听
         try {
             future.sync();
-            log.info("服务启动成功，准备注册服务");
-            ServiceFactory.registry();
+            log.info("服务启动成功, 端口: {}", Config.Server.port());
         } catch (InterruptedException e) {
             log.error("服务启动失败");
             try {
@@ -59,7 +56,6 @@ public class LrpcServerBootstrap {
             }
             throw new RuntimeException(e);
         }
-
     }
 
     public void stop() {
@@ -67,12 +63,12 @@ public class LrpcServerBootstrap {
             log.error("服务未启动");
             return;
         }
-        bootstrap.config().group().shutdownGracefully();
-        try {
-            RegistryFactory.getRegistry().close();
-        } catch (Exception e) {
-            log.error("关闭注册中心失败", e);
-            throw new RuntimeException(e);
-        }
+        bootstrap.config().group().shutdownGracefully().addListener(future -> {
+            if (future.isSuccess()) {
+                log.info("Lrpc服务端关闭成功");
+            } else {
+                log.error("Lrpc服务端关闭失败", future.cause());
+            }
+        });
     }
 }

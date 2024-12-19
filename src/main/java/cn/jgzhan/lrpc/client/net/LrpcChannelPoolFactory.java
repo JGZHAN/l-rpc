@@ -1,4 +1,4 @@
-package cn.jgzhan.lrpc.client.pool;
+package cn.jgzhan.lrpc.client.net;
 
 import cn.jgzhan.lrpc.common.config.Config;
 import cn.jgzhan.lrpc.common.config.HandlerConfig;

@@ -1,7 +1,8 @@
 package cn.jgzhan.lrpc.client.loadbalance;
 
-import cn.jgzhan.lrpc.client.Consumer;
+import cn.jgzhan.lrpc.client.ConsumerManager;
 import cn.jgzhan.lrpc.common.dto.Pair;
+import cn.jgzhan.lrpc.common.util.SingletonUtils;
 import lombok.NonNull;
 
 import java.lang.reflect.Method;
@@ -30,11 +31,19 @@ public interface LoadBalancer {
      */
     Pair<String, Integer> selectServiceAddress(Method service);
 
+    /**
+     * Select service address string.
+     *
+     * @param serviceAddress the service address
+     * @return the string
+     */
+    Pair<String, Integer> selectServiceAddress(Set<Pair<String, Integer>> serviceAddress);
+
 
 
     @NonNull
     default Set<Pair<String, Integer>> getServiceAddress(Method service) {
-        return Optional.ofNullable(Consumer.getServiceAddress(service))
+        return Optional.ofNullable(SingletonUtils.getSingletonInstance(ConsumerManager.class).getServiceAddress(service))
                 .filter(addresses -> !addresses.isEmpty())
                 .orElseThrow(() -> new RuntimeException("没有可用的服务提供者"));
     }

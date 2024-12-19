@@ -2,7 +2,8 @@ package cn.jgzhan.lrpc.common.handler;
 
 import cn.jgzhan.lrpc.common.dto.RpcRequestMessage;
 import cn.jgzhan.lrpc.common.dto.RpcResponseMessage;
-import cn.jgzhan.lrpc.server.service.ServiceFactory;
+import cn.jgzhan.lrpc.common.util.SingletonUtils;
+import cn.jgzhan.lrpc.server.ServiceManager;
 import com.alibaba.fastjson2.JSON;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -20,15 +21,20 @@ import java.lang.reflect.InvocationTargetException;
 @ChannelHandler.Sharable
 public class RpcReqHandler extends SimpleChannelInboundHandler<RpcRequestMessage> {
     private static final Logger log = LoggerFactory.getLogger(RpcReqHandler.class);
+    private final ServiceManager serviceManager;
+
+    public RpcReqHandler() {
+        serviceManager = SingletonUtils.getSingletonInstance(ServiceManager.class);
+    }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, RpcRequestMessage msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, RpcRequestMessage msg) {
 
 //        log.info("接收到消息 {}", JSON.toJSON(msg));
         final var interfaceName = msg.getInterfaceName();
         final var methodName = msg.getMethodName();
 
-        final var service = ServiceFactory.getService(interfaceName);
+        final var service = serviceManager.getService(interfaceName);
 
         final var response = new RpcResponseMessage();
         response.setMessageId(msg.getMessageId());

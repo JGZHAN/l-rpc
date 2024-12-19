@@ -62,9 +62,9 @@ public class ZookeeperRegistryCenter implements RegistryCenter {
     }
 
     @Override
-    public void registerService(Method method, int port) {
+    public void registerService(Method method) {
         String host = this.getHost();
-        String providerAddress = method.toString() + "/" + host + ":" + port;
+        String providerAddress = method.toString() + "/" + host + ":" + Config.Server.port();
         try {
             this.create(String.join("/", PROVIDER, providerAddress));
             log.info("LRPC 服务提供者注册成功: {}", providerAddress);
@@ -77,7 +77,7 @@ public class ZookeeperRegistryCenter implements RegistryCenter {
                 log.error("删除服务提供者失败", ex);
             }
             // 重新注册
-            registerService(method, port);
+            registerService(method);
         } catch (Exception e) {
             log.error("注册服务提供者失败", e);
         }
@@ -126,6 +126,7 @@ public class ZookeeperRegistryCenter implements RegistryCenter {
     @Override
     public void close() {
         client.close();
+        log.info("关闭注册中心成功");
     }
 
     @NonNull
